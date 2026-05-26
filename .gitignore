@@ -1,0 +1,17 @@
+# Quartus project files (not part of the library)
+quartus_projects/
+
+# Future / deferred modules (not ready yet)
+future/
+
+# Handover files (internal workflow, not for public repo)
+handovers/
+
+# Notes and workspace files
+notes/
+*.bak
+*.orig
+db/
+incremental_db/
+output_files/
+simulation/
