@@ -1,11 +1,11 @@
 # Verilog HDL Library
 
-A personal, growing library of synthesizable Verilog modules, each shipped with an independent, self-checking testbench. The library is being built and verified **section by section** — a module is only marked ✅ once it has passed a full self-checking verification suite against an independent reference model.
+A personal, growing library of synthesizable Verilog modules, each shipped with an independent, self-checking testbench. The library is being built and verified **section by section**, a module is only marked ✅ once it has passed a full self-checking verification suite against an independent reference model.
 
 **First completed section — Arithmetic — is live and fully verified.** The remaining sections are in active development.
 
 > **Arithmetic section:** 6 / 6 modules verified · 1,717,077 self-checking comparisons · 0 failures
-> Simulator: ModelSim – Intel FPGA Edition 10.5b · Target: Intel Cyclone V · Verilog-2001
+> Simulator: ModelSim – Intel FPGA Edition 10.5b
 
 ---
 
