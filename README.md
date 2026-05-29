@@ -2,10 +2,11 @@
 
 A personal, growing library of synthesizable Verilog modules, each shipped with an independent, self-checking testbench. The library is being built and verified **section by section**, a module is only marked ✅ once it has passed a full self-checking verification suite against an independent reference model.
 
-**Two sections complete — Arithmetic and Control — both fully verified.** The remaining sections are in active development.
+**Three sections complete — Arithmetic, Control, and Datapath — all fully verified.** The remaining sections are in active development.
 
 > **Arithmetic:** 6 / 6 modules verified · 1,717,077 self-checking comparisons · 0 failures
 > **Control:** 12 / 12 modules verified · all self-checking testbenches PASS · 0 failures
+> **Datapath:** 6 / 6 modules verified · 8,552 exhaustive comparisons · 0 failures
 > Simulator: ModelSim – Intel FPGA Edition 10.5b
 
 ---
@@ -16,13 +17,13 @@ A personal, growing library of synthesizable Verilog modules, each shipped with 
 |---|---|:---:|
 | **Arithmetic** | ALU, Adder, Subtractor, Multiplier, Divider, Comparator | ✅ **Complete & verified** |
 | **Control** | UpCounter, DownCounter, UpDownCounter, BCDCounter, GrayCounter, JohnsonCounter, LFSR, ModNCounter, PWMCounter, RingCounter, RippleCounter, Timer | ✅ **Complete & verified** |
-| Datapath | Registers, shift registers, multiplexers | 🚧 In development |
-| Memory | RAM, ROM, register file, flip-flops | 🚧 In development |
+| **Datapath** | Decoder, Demultiplexer, Encoder, PriorityEncoder, BarrelShifter, Multiplexer | ✅ **Complete & verified** |
+| Memory | RAM, ROM, register, shift registers, flip-flops, latches | 🚧 In development |
 | Finite state machines | Pattern/sequence FSMs, control units | 🚧 Planned |
-| Protocols / I/O | UART, SPI, I2C | 🚧 Planned |
+| Protocols / I/O | UART, SPI, I²C | 🚧 Planned |
 | Capstone | RV32I RISC-V core (assembled from the blocks above) | 🚧 Planned |
 
-Both the Arithmetic and Control sections carry verification results below. In-progress sections will be documented and verified to the same standard before being marked complete.
+All three completed sections carry verification results below. In-progress sections will be documented and verified to the same standard before being marked complete.
 
 ---
 
@@ -32,6 +33,7 @@ Most testbenches "pass" because they were never pushed hard enough to fail. The 
 
 - **Arithmetic:** A sign-extension defect in the ALU's arithmetic shift-right, root-caused to a toolchain quirk and fixed with a portable construct. Re-verified clean across all 1,048,576 ALU input combinations. See [The Bug](#the-bug-alu-arithmetic-shift-right).
 - **Control:** Two Verilog scheduling subtleties — a width-promotion bug in the JohnsonCounter testbench reference model (context-determined vs. self-determined operands) and an active-region vs. NBA-region race in the RippleCounter wrap-catch. Both were silent failures the simulator accepted without warning. See [The Bugs: Control Testbenches](#the-bugs-control-testbenches).
+- **Datapath:** A for-loop scan-direction bug in the PriorityEncoder that silently returned the lowest-numbered set bit instead of the highest. One-hot inputs passed either way, masking the defect — only an exhaustive multi-hot sweep caught it. See [The Bug: PriorityEncoder Scan Direction](#the-bug-priorityencoder-scan-direction).
 
 ---
 
@@ -131,6 +133,51 @@ wait (Q == {WIDTH{1'b1}});
 
 ---
 
+## Datapath section — verification summary
+
+All 6 datapath modules are parameterized and purely combinational. Each testbench uses an **independent reference model** structurally different from the DUT (e.g. bit-indexing vs. shifting, per-bit position mapping vs. operator expressions) and strict (`!==`) comparison. Every module with a feasible input space was verified **exhaustively**.
+
+| Module | Default config | Verification method | Cases | Result |
+|---|---|---|---:|:---:|
+| Decoder | N=3 (3-to-8) | Exhaustive (en × sel) | 16 | ✅ PASS |
+| Demultiplexer | N=3 (1-to-8) | Exhaustive (D × sel) | 16 | ✅ PASS |
+| Encoder | N=3 (8-to-3) | All one-hot inputs | 8 | ✅ PASS |
+| PriorityEncoder | N=3 (8-to-3) | Exhaustive over all 2^8 inputs (incl. multi-hot) | 256 | ✅ PASS |
+| BarrelShifter | WIDTH=8 | Exhaustive (4 modes × 8 amounts × 256 data) | 8,192 | ✅ PASS |
+| Multiplexer | WIDTH=4 (4-to-1) | Exhaustive (4 selects × 16 data) | 64 | ✅ PASS |
+| **Total** | — | — | **8,552** | ✅ PASS |
+
+---
+
+## The Bug: PriorityEncoder Scan Direction
+
+During datapath verification the self-checking flow flagged mismatches on **multi-hot inputs** for the PriorityEncoder. One-hot inputs passed in both directions, so the bug was invisible to any test suite that only drove valid one-hot patterns.
+
+```verilog
+// BEFORE — scans high-to-low, last write wins = lowest set bit
+for (i = (1<<N)-1; i >= 0; i = i - 1)
+    if (D[i]) Y = i;
+// observed: D=10000001  ->  Y=000  (bit 0, the lowest)
+// expected: D=10000001  ->  Y=111  (bit 7, the highest)
+```
+
+**Root cause:** the for-loop iterates from `(1<<N)-1` down to `0`. In a combinational `always @(*)` block, the last assignment wins. When `i` reaches the lowest set bit, it overwrites all earlier assignments — so the module returns the lowest-numbered set bit, contradicting its spec ("highest-numbered asserted input bit").
+
+**Fix** — reverse the scan direction so the last write is the highest:
+
+```verilog
+// AFTER — scans low-to-high, last write wins = highest set bit
+for (i = 0; i < (1<<N); i = i + 1)
+    if (D[i]) Y = i;
+// result: D=10000001  ->  Y=111  (correct)
+```
+
+After the fix, all 256 exhaustive input patterns — including every multi-hot combination — passed with zero failures.
+
+**Lesson:** one-hot-only test coverage is a false sense of security for encoders. The PriorityEncoder's entire purpose is to handle multi-hot inputs, yet a one-hot-only suite would have marked it clean. Exhaustive coverage over the full 2^N input space caught what directed testing missed.
+
+---
+
 ## Verification methodology
 
 Every completed module uses the same self-checking philosophy: for each stimulus the testbench computes the expected output from an **independent reference model** (written separately from the design under test), then compares it against the DUT using a **strict (`!==`) comparison**. The strict operator also flags any unknown (`X`) or high-impedance (`Z`) value, so an uninitialized or floating output cannot silently pass. Only mismatches are printed; a running pass/fail tally is reported at completion.
@@ -198,7 +245,7 @@ Asserts one of three mutually exclusive outputs — `eq`, `lt`, `gt` — for uns
 verilog_lib/
 ├── arithmetic/         # ✅ complete & verified (6 modules + 6 testbenches)
 ├── control/            # ✅ complete & verified (12 modules + 12 testbenches)
-├── datapath/           # 🚧 in development
+├── datapath/           # ✅ complete & verified (6 modules + 6 testbenches)
 ├── gates/              # 🚧 in development
 ├── memory/             # 🚧 in development
 ├── utilities/          # 🚧 in development
@@ -223,6 +270,14 @@ vsim -c <module>_tb -do "run -all; quit"
 
 The control folder requires the T-flip-flop primitive (used by RippleCounter) to be compiled alongside.
 
+**ModelSim / Questa (Datapath):**
+```bash
+vlog datapath/<module>.v datapath/<module>_tb.v
+vsim -c <module>_tb -do "run -all; quit"
+```
+
+All datapath modules are self-contained with no external dependencies.
+
 **Icarus Verilog (open-source alternative):**
 ```bash
 iverilog -g2001 -o sim <section>/<module>.v <section>/<module>_tb.v
@@ -237,8 +292,8 @@ Each testbench prints only mismatches and ends with a pass/fail tally.
 
 - [x] **Arithmetic** — ALU, adder, subtractor, multiplier, divider, comparator (verified)
 - [x] **Control** — 12 parameterized counters and timers (verified)
-- [ ] **Datapath** — registers, shift registers, multiplexers
-- [ ] **Memory** — RAM, ROM, register file, flip-flops
+- [x] **Datapath** — decoder, demultiplexer, encoder, priority encoder, barrel shifter, multiplexer (verified)
+- [ ] **Memory** — RAM, ROM, register, shift registers, flip-flops, latches
 - [ ] **Gates** — basic combinational logic primitives
 - [ ] **FSMs** — sequence detectors, control units
 - [ ] **Protocols** — UART, SPI, I²C
