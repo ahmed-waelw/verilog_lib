@@ -10,7 +10,7 @@
 `timescale 1ns/1ps
 
 module JohnsonCounter_tb();
-    parameter  N = 4;
+    parameter  N = 8;
     localparam CYCLE = 2*N;
 
     reg              clk, reset;
@@ -27,8 +27,10 @@ module JohnsonCounter_tb();
     //   Model: exp <= (exp << 1) | ~exp[N-1];
     reg [N-1:0] exp;
     always @(posedge clk or posedge reset) begin
-        if (reset) exp <= {N{1'b0}};
-        else       exp <= (exp << 1) | ~exp[N-1];
+        if 
+        (reset) exp <= {N{1'b0}};
+        else       
+        exp <= (exp << 1) | {{N-1{1'b0}}, ~exp[N-1]};
     end
 
     task automatic check;

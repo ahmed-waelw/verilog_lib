@@ -41,3 +41,21 @@ module RippleCounter #(
     // Qn_internal[WIDTH-1] is intentionally unused (top stage's complement).
 
 endmodule
+
+module TFlipFlopPosEdgeActHigh(
+    input  T,
+    input  clk,
+    input  reset,
+    output reg Q,
+    output Qn
+);
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            Q <= 1'b0;
+        end else if (T) begin
+            Q <= ~Q;
+        end
+    end
+
+    assign Qn = ~Q;
+endmodule

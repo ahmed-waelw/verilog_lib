@@ -50,13 +50,14 @@ module RippleCounter_tb();
         // ---- Test 1: reset, then free-run through 2+ full wraps ----
         reset = 1;
         repeat (2) @(posedge clk);
-        @(negedge clk) reset = 0;
-        repeat (2 * DEPTH) @(posedge clk);          // 32 cycles, > 2 wraps
+        @(negedge clk) reset = 0;                    // <-- this line was lost
+        repeat (2 * DEPTH) @(posedge clk);           // 32 cycles, > 2 wraps
+        @(negedge clk);                              // settle past the last posedge's NBA
 
-        // ---- Test 3: explicit wrap MAX -> 0 (worst-case ripple cascade) ----
-        wait (Q == {WIDTH{1'b1}});                  // catch the settled MAX state
+        // ---- Test 3: explicit wrap MAX -> 0 ----
+        wait (Q == {WIDTH{1'b1}});
         @(posedge clk);                              // next edge: full-width cascade
-        @(negedge clk) #1;                           // sample after settling
+        @(negedge clk) #1;                           // sample after settling                        // sample after settling
         if (Q !== {WIDTH{1'b0}}) begin
             $display("FAIL: wrap MAX->0 (Q=%b after settling)", Q);
             errors = errors + 1;
