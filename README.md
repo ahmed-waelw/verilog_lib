@@ -19,7 +19,7 @@ A personal, growing library of synthesizable Verilog modules, each shipped with 
 | Datapath | Registers, shift registers, multiplexers | 🚧 In development |
 | Memory | RAM, ROM, register file, flip-flops | 🚧 In development |
 | Finite state machines | Pattern/sequence FSMs, control units | 🚧 Planned |
-| Protocols / I/O | UART, SPI, I²C | 🚧 Planned |
+| Protocols / I/O | UART, SPI, I2C | 🚧 Planned |
 | Capstone | RV32I RISC-V core (assembled from the blocks above) | 🚧 Planned |
 
 Both the Arithmetic and Control sections carry verification results below. In-progress sections will be documented and verified to the same standard before being marked complete.
