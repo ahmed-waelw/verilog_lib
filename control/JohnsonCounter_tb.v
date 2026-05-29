@@ -24,13 +24,12 @@ module JohnsonCounter_tb();
 
     // Reference: same Johnson rule, written differently from the DUT.
     //   DUT  : Q   <= {Q[N-2:0], ~Q[N-1]};
-    //   Model: exp <= (exp << 1) | ~exp[N-1];
+    //   Model: exp <= (exp << 1) | {{N-1{1'b0}}, ~exp[N-1]};
+    // The inverted MSB is zero-extended to N bits so only the LSB is set.
     reg [N-1:0] exp;
     always @(posedge clk or posedge reset) begin
-        if 
-        (reset) exp <= {N{1'b0}};
-        else       
-        exp <= (exp << 1) | {{N-1{1'b0}}, ~exp[N-1]};
+        if (reset) exp <= {N{1'b0}};
+        else       exp <= (exp << 1) | {{N-1{1'b0}}, ~exp[N-1]};
     end
 
     task automatic check;
