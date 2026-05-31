@@ -45,7 +45,7 @@ module ALU #(
     output reg             carry,
     output reg             overflow
 );
-
+se
     localparam SHAMT_WIDTH = $clog2(WIDTH);
     wire signed [WIDTH-1:0] A_signed = A;
 

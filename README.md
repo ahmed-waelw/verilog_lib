@@ -18,9 +18,9 @@ A personal, growing library of synthesizable Verilog modules, each shipped with 
 | **Arithmetic** | ALU, Adder, Subtractor, Multiplier, Divider, Comparator | ✅ **Complete & verified** |
 | **Control** | UpCounter, DownCounter, UpDownCounter, BCDCounter, GrayCounter, JohnsonCounter, LFSR, ModNCounter, PWMCounter, RingCounter, RippleCounter, Timer | ✅ **Complete & verified** |
 | **Datapath** | Decoder, Demultiplexer, Encoder, PriorityEncoder, BarrelShifter, Multiplexer | ✅ **Complete & verified** |
-| Memory | RAM, ROM, register, shift registers, flip-flops, latches | 🚧 In development |
+| **Memory** | DFlipFlop, JKFlipFlop, TFlipFlop, SRFlipFlop, DLatch, SRLatch, Register, ShiftRegisterSISO/SIPO/PISO/PIPO/Universal, RAMSinglePort, RAMDualPort, ROM, FIFO | 🔬 Verification in progress |
+| Communication | UART, SPI, I²C | 🚧 In development |
 | Finite state machines | Pattern/sequence FSMs, control units | 🚧 Planned |
-| Protocols / I/O | UART, SPI, I²C | 🚧 Planned |
 | Capstone | RV32I RISC-V core (assembled from the blocks above) | 🚧 Planned |
 
 All three completed sections carry verification results below. In-progress sections will be documented and verified to the same standard before being marked complete.
@@ -246,9 +246,8 @@ verilog_lib/
 ├── arithmetic/         # ✅ complete & verified (6 modules + 6 testbenches)
 ├── control/            # ✅ complete & verified (12 modules + 12 testbenches)
 ├── datapath/           # ✅ complete & verified (6 modules + 6 testbenches)
-├── gates/              # 🚧 in development
-├── memory/             # 🚧 in development
-├── utilities/          # 🚧 in development
+├── memory/             # 🔬 verification in progress (16 modules + 16 testbenches)
+├── communication/      # 🚧 in development
 └── README.md
 ```
 
@@ -264,11 +263,17 @@ vsim -c <module>_tb -do "run -all; quit"
 
 **ModelSim / Questa (Control):**
 ```bash
-vlog control/*.v memory/TFlipFlop/TFlipFlopPosEdgeActHigh.v
+vlog control/*.v memory/TFlipFlop.v
 vsim -c <module>_tb -do "run -all; quit"
 ```
 
 The control folder requires the T-flip-flop primitive (used by RippleCounter) to be compiled alongside.
+
+**ModelSim / Questa (Memory):**
+```bash
+vlog memory/<module>.v memory/<module>_tb.v
+vsim -c <module>_tb -do "run -all; quit"
+```
 
 **ModelSim / Questa (Datapath):**
 ```bash
@@ -293,10 +298,9 @@ Each testbench prints only mismatches and ends with a pass/fail tally.
 - [x] **Arithmetic** — ALU, adder, subtractor, multiplier, divider, comparator (verified)
 - [x] **Control** — 12 parameterized counters and timers (verified)
 - [x] **Datapath** — decoder, demultiplexer, encoder, priority encoder, barrel shifter, multiplexer (verified)
-- [ ] **Memory** — RAM, ROM, register, shift registers, flip-flops, latches
-- [ ] **Gates** — basic combinational logic primitives
+- [ ] **Memory** — flip-flops, latches, register, shift registers, RAM, ROM, FIFO (verification in progress)
+- [ ] **Communication** — UART, SPI, I²C
 - [ ] **FSMs** — sequence detectors, control units
-- [ ] **Protocols** — UART, SPI, I²C
 - [ ] **SystemVerilog rebuild** — class-based testbenches, constrained-random stimulus, functional coverage, and SVA assertions
 - [ ] **Capstone** — RV32I RISC-V core assembled from the library blocks
 
