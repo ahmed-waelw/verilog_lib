@@ -2,11 +2,12 @@
 
 A personal, growing library of synthesizable Verilog modules, each shipped with an independent, self-checking testbench. The library is being built and verified **section by section**, a module is only marked ✅ once it has passed a full self-checking verification suite against an independent reference model.
 
-**Three sections complete — Arithmetic, Control, and Datapath — all fully verified.** The remaining sections are in active development.
+**Four sections complete — Arithmetic, Control, Datapath, and Memory — all fully verified.** The remaining sections are in active development.
 
 > **Arithmetic:** 6 / 6 modules verified · 1,717,077 self-checking comparisons · 0 failures
 > **Control:** 12 / 12 modules verified · all self-checking testbenches PASS · 0 failures
 > **Datapath:** 6 / 6 modules verified · 8,552 exhaustive comparisons · 0 failures
+> **Memory:** 16 / 16 modules verified · all self-checking testbenches PASS · 0 failures
 > Simulator: ModelSim – Intel FPGA Edition 10.5b
 
 ---
@@ -18,12 +19,12 @@ A personal, growing library of synthesizable Verilog modules, each shipped with 
 | **Arithmetic** | ALU, Adder, Subtractor, Multiplier, Divider, Comparator | ✅ **Complete & verified** |
 | **Control** | UpCounter, DownCounter, UpDownCounter, BCDCounter, GrayCounter, JohnsonCounter, LFSR, ModNCounter, PWMCounter, RingCounter, RippleCounter, Timer | ✅ **Complete & verified** |
 | **Datapath** | Decoder, Demultiplexer, Encoder, PriorityEncoder, BarrelShifter, Multiplexer | ✅ **Complete & verified** |
-| **Memory** | DFlipFlop, JKFlipFlop, TFlipFlop, SRFlipFlop, DLatch, SRLatch, Register, ShiftRegisterSISO/SIPO/PISO/PIPO/Universal, RAMSinglePort, RAMDualPort, ROM, FIFO | 🔬 Verification in progress |
+| **Memory** | DFlipFlop, JKFlipFlop, TFlipFlop, SRFlipFlop, DLatch, SRLatch, Register, ShiftRegisterSISO/SIPO/PISO/PIPO/Universal, RAMSinglePort, RAMDualPort, ROM, FIFO | ✅ **Complete & verified** |
 | Communication | UART, SPI, I²C | 🚧 In development |
 | Finite state machines | Pattern/sequence FSMs, control units | 🚧 Planned |
 | Capstone | RV32I RISC-V core (assembled from the blocks above) | 🚧 Planned |
 
-All three completed sections carry verification results below. In-progress sections will be documented and verified to the same standard before being marked complete.
+All four completed sections carry verification results below. In-progress sections will be documented and verified to the same standard before being marked complete.
 
 ---
 
@@ -178,6 +179,33 @@ After the fix, all 256 exhaustive input patterns — including every multi-hot c
 
 ---
 
+## Memory section — verification summary
+
+The memory section covers 16 modules spanning flip-flops, latches, registers, shift registers, RAM, ROM, and a synchronous FIFO. Every testbench uses an **independent shadow reference model** (shadow register, shadow memory array, or golden queue) and strict (`!==`) comparison. All sequential modules were tested for correct **asynchronous reset** behavior.
+
+| Module | Type | Verification method | Key properties checked | Result |
+|---|---|---|---|:---:|
+| DFlipFlop | Flip-flop | Directed + glitch | Capture on posedge, hold between edges, async reset, Qn complement | ✅ PASS |
+| JKFlipFlop | Flip-flop | Directed (all JK combos) | Hold/reset/set/toggle truth table, async reset | ✅ PASS |
+| TFlipFlop | Flip-flop | Directed | Toggle on T=1, hold on T=0, async reset | ✅ PASS |
+| SRFlipFlop | Flip-flop | Directed (all SR combos) | Hold/reset/set/forbidden truth table, async reset | ✅ PASS |
+| DLatch | Latch | Directed | Transparent when En=1, latches when En=0, async reset | ✅ PASS |
+| SRLatch | Latch | Directed | SR truth table gated by En, async reset | ✅ PASS |
+| Register | Register | Shadow reg | Load, hold, async reset from non-zero, recovery | ✅ PASS |
+| ShiftRegisterSISO | Shift register | Shadow shift reg | Shift-in pattern, hold, full shift-through, async reset | ✅ PASS |
+| ShiftRegisterSIPO | Shift register | Shadow shift reg | Assemble byte serially, hold, async reset | ✅ PASS |
+| ShiftRegisterPISO | Shift register | Shadow shift reg | Load + MSB-first shift-out, load overrides shift, zero-fill | ✅ PASS |
+| ShiftRegisterPIPO | Shift register | Shadow reg | Load, hold, multiple loads, async reset | ✅ PASS |
+| ShiftRegisterUniversal | Shift register | Case-on-mode shadow | All 4 modes, mode transitions, async reset | ✅ PASS |
+| RAMSinglePort | Memory | Shadow mem array | Write/read, all-address sweep, overwrite, read-during-write | ✅ PASS |
+| RAMDualPort | Memory | Shared shadow mem | A-only, B-only, cross-port, independent clocks (10ns/14ns) | ✅ PASS |
+| ROM | Memory | Known reference array | Sequential read, random-order read, repeated reads (1-cycle latency) | ✅ PASS |
+| FIFO | Memory | Golden queue scoreboard | Fill/drain, overflow/underflow protection, pointer wrap, simultaneous R+W, random stress | ✅ PASS |
+
+All 16 design modules were correct — no design bugs found. Three of the pre-written testbenches had minor syntax issues (missing semicolons, `reg` instead of `input` in task params, missing `$finish`) that were fixed during the verification pass.
+
+---
+
 ## Verification methodology
 
 Every completed module uses the same self-checking philosophy: for each stimulus the testbench computes the expected output from an **independent reference model** (written separately from the design under test), then compares it against the DUT using a **strict (`!==`) comparison**. The strict operator also flags any unknown (`X`) or high-impedance (`Z`) value, so an uninitialized or floating output cannot silently pass. Only mismatches are printed; a running pass/fail tally is reported at completion.
@@ -246,7 +274,7 @@ verilog_lib/
 ├── arithmetic/         # ✅ complete & verified (6 modules + 6 testbenches)
 ├── control/            # ✅ complete & verified (12 modules + 12 testbenches)
 ├── datapath/           # ✅ complete & verified (6 modules + 6 testbenches)
-├── memory/             # 🔬 verification in progress (16 modules + 16 testbenches)
+├── memory/             # ✅ complete & verified (16 modules + 16 testbenches)
 ├── communication/      # 🚧 in development
 └── README.md
 ```
@@ -298,7 +326,7 @@ Each testbench prints only mismatches and ends with a pass/fail tally.
 - [x] **Arithmetic** — ALU, adder, subtractor, multiplier, divider, comparator (verified)
 - [x] **Control** — 12 parameterized counters and timers (verified)
 - [x] **Datapath** — decoder, demultiplexer, encoder, priority encoder, barrel shifter, multiplexer (verified)
-- [ ] **Memory** — flip-flops, latches, register, shift registers, RAM, ROM, FIFO (verification in progress)
+- [x] **Memory** — flip-flops, latches, register, shift registers, RAM, ROM, FIFO (verified)
 - [ ] **Communication** — UART, SPI, I²C
 - [ ] **FSMs** — sequence detectors, control units
 - [ ] **SystemVerilog rebuild** — class-based testbenches, constrained-random stimulus, functional coverage, and SVA assertions
