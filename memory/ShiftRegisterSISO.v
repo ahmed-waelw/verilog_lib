@@ -10,7 +10,7 @@
 //              serial_in   - bit shifted in at LSB end
 //              serial_out  - bit shifted out at MSB end
 // Author:      Amr Said
-// Date:        2026-05-14
+// Date:        2026-06-07
 // ----------------------------------------------------------------------------
 module ShiftRegisterSISO #(
     parameter WIDTH = 8

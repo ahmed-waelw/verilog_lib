@@ -14,7 +14,7 @@
 //              din_a, din_b      - data inputs
 //              dout_a, dout_b    - registered data outputs
 // Author:      Amr Said
-// Date:        2026-05-14
+// Date:        2026-06-07
 // ----------------------------------------------------------------------------
 module RAMDualPort #(
     parameter WIDTH = 8,

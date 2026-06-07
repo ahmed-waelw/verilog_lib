@@ -10,7 +10,7 @@
 //              D       - WIDTH-bit parallel data input
 //              Q       - WIDTH-bit parallel data output
 // Author:      Amr Said
-// Date:        2026-05-14
+// Date:        2026-06-07
 // ----------------------------------------------------------------------------
 module ShiftRegisterPIPO #(
     parameter WIDTH = 8

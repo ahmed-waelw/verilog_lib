@@ -4,7 +4,7 @@
 // DUT:         ROM #(.WIDTH(8), .DEPTH(16), .INIT_FILE("rom_test.hex"))
 //              Ports: clk, addr [AW-1:0] -> dout [WIDTH-1:0]
 // Author:      Amr Said
-// Date:        2026-05-31
+// Date:        2026-06-07
 // ----------------------------------------------------------------------------
 `timescale 1ns/1ps
 

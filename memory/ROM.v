@@ -11,7 +11,7 @@
 //              addr  - address input (AW bits)
 //              dout  - registered data output
 // Author:      Amr Said
-// Date:        2026-05-14
+// Date:        2026-06-07
 // ----------------------------------------------------------------------------
 module ROM #(
     parameter        WIDTH     = 8,

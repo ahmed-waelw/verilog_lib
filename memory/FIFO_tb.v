@@ -5,7 +5,7 @@
 //              Ports: clk, reset, wr_en, rd_en, din [WIDTH-1:0]
 //                     -> dout [WIDTH-1:0], full, empty
 // Author:      Amr Said
-// Date:        2026-05-30
+// Date:        2026-06-07
 // ----------------------------------------------------------------------------
 `timescale 1ns/1ps
 

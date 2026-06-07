@@ -10,7 +10,7 @@
 //              serial_in - bit shifted in at LSB end
 //              Q         - WIDTH-bit parallel output
 // Author:      Amr Said
-// Date:        2026-05-14
+// Date:        2026-06-07
 // ----------------------------------------------------------------------------
 module ShiftRegisterSIPO #(
     parameter WIDTH = 8

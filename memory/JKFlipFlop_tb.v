@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // Module:      JKFlipFlop_tb
 // Description: Self-checking testbench for JK flip-flop.
-// DUT:         JKFlipFlop
+// DUT:         JKFlipFlop.v
 //              Ports: J, K, clk, reset -> Q, Qn
 //              JK: 00=hold, 01=reset, 10=set, 11=toggle
 // Author:      Amr Said
-// Date:        2026-05-30
+// Date:        2026-06-07
 // ----------------------------------------------------------------------------
 `timescale 1ns/1ps
 

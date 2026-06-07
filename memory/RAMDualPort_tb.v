@@ -5,7 +5,7 @@
 //              Ports: clk_a, we_a, addr_a, din_a -> dout_a
 //                     clk_b, we_b, addr_b, din_b -> dout_b
 // Author:      Amr Said
-// Date:        2026-05-31
+// Date:        2026-06-07
 // ----------------------------------------------------------------------------
 `timescale 1ns/1ps
 

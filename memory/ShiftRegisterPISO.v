@@ -10,7 +10,7 @@
 //              D           - WIDTH-bit parallel data input
 //              serial_out  - bit shifted out at MSB end
 // Author:      Amr Said
-// Date:        2026-05-14
+// Date:        2026-06-07
 // ----------------------------------------------------------------------------
 module ShiftRegisterPISO #(
     parameter WIDTH = 8

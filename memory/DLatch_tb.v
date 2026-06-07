@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // Module:      DLatch_tb
 // Description: Self-checking testbench for D latch.
-// DUT:         DLatch
+// DUT:         DLatch.v
 //              Ports: D, En, reset -> Q, Qn
 //              Transparent when En=1, latches when En=0
 // Author:      Amr Said
-// Date:        2026-05-30
+// Date:        2026-06-07
 // ----------------------------------------------------------------------------
 `timescale 1ns/1ps
 

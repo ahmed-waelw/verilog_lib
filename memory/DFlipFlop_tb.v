@@ -1,10 +1,10 @@
 // ----------------------------------------------------------------------------
 // Module:      DFlipFlop_tb
 // Description: Self-checking testbench for D flip-flop.
-// DUT:         DFlipFlop
+// DUT:         DFlipFlop.v
 //              Ports: D, clk, reset -> Q, Qn
 // Author:      Amr Said
-// Date:        2026-05-30
+// Date:        2026-06-07
 // ----------------------------------------------------------------------------
 `timescale 1ns/1ps
 

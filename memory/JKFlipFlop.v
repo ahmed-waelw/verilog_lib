@@ -9,7 +9,7 @@
 //              Q     - data output
 //              Qn    - inverted data output
 // Author:      Amr Said
-// Date:        2026-05-13
+// Date:        2026-06-07
 // ----------------------------------------------------------------------------
 module JKFlipFlop(
     input  J,

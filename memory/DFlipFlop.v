@@ -7,7 +7,7 @@
 //              Q     - data output
 //              Qn    - inverted data output
 // Author:      Amr Said
-// Date:        2026-05-12
+// Date:        2026-06-07
 // ----------------------------------------------------------------------------
 module DFlipFlop(
     input  D,

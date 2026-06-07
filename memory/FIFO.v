@@ -14,7 +14,7 @@
 //              full  - high when FIFO is full
 //              empty - high when FIFO is empty
 // Author:      Amr Said
-// Date:        2026-05-30
+// Date:        2026-06-07
 // ----------------------------------------------------------------------------
 module FIFO #(
     parameter WIDTH = 8,

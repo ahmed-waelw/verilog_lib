@@ -5,7 +5,7 @@
 //              Ports: S, R, clk, reset -> Q, Qn
 //              SR: 00=hold, 01=reset, 10=set, 11=forbidden (x)
 // Author:      Amr Said
-// Date:        2026-05-30
+// Date:        2026-06-07
 // ----------------------------------------------------------------------------
 `timescale 1ns/1ps
 

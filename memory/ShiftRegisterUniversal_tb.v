@@ -6,7 +6,7 @@
 //                     D [WIDTH-1:0] -> Q [WIDTH-1:0]
 //              mode: 00=hold, 01=shift-right, 10=shift-left, 11=load
 // Author:      Amr Said
-// Date:        2026-05-31
+// Date:        2026-06-07
 // ----------------------------------------------------------------------------
 `timescale 1ns/1ps
 

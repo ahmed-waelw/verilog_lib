@@ -4,7 +4,7 @@
 // DUT:         ShiftRegisterSIPO #(.WIDTH(8))
 //              Ports: clk, reset, shift_en, serial_in -> Q [WIDTH-1:0]
 // Author:      Amr Said
-// Date:        2026-05-31
+// Date:        2026-06-07
 // ----------------------------------------------------------------------------
 `timescale 1ns/1ps
 

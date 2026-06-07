@@ -9,7 +9,7 @@
 //              D       - WIDTH-bit data input
 //              Q       - WIDTH-bit registered output
 // Author:      Amr Said
-// Date:        2026-05-14
+// Date:        2026-06-07
 // ----------------------------------------------------------------------------
 module Register #(
     parameter WIDTH = 8

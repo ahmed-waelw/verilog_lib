@@ -5,7 +5,7 @@
 //              Ports: T, clk, reset -> Q, Qn
 //              T=1 toggles, T=0 holds
 // Author:      Amr Said
-// Date:        2026-05-30
+// Date:        2026-06-07
 // ----------------------------------------------------------------------------
 `timescale 1ns/1ps
 

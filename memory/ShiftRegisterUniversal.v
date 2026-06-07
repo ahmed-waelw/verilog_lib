@@ -15,7 +15,7 @@
 //              D            - WIDTH-bit parallel data input
 //              Q            - WIDTH-bit register output
 // Author:      Amr Said
-// Date:        2026-05-14
+// Date:        2026-06-07
 // ----------------------------------------------------------------------------
 module ShiftRegisterUniversal #(
     parameter WIDTH = 8
