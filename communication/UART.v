@@ -18,6 +18,8 @@
 // Author:      Amr Said
 // Date:        2026-05-14
 // ----------------------------------------------------------------------------
+//AHmed WAel's ADDITION
+
 module UART #(
     parameter CLK_HZ = 50_000_000,
     parameter BAUD   = 115_200
